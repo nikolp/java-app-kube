@@ -9,10 +9,14 @@ Then
 ```
 java -jar target/appkube-1.jar    
 ```
-Then in browser http://localhost:8080
+Then in browser http://localhost:8090
 
 ## Change port
-Via env variables
+The above port is configure in application.properties
+```
+server.port=8090
+```
+One can change it many ways, for example via env variables
 ```
 SERVER_PORT=8888 java -jar target/appkube-1.jar
 ```
@@ -36,16 +40,14 @@ Then in browser http://localhost:5000
 Once happy
 ```
 APPVER="java-app-kube:v1"
-docker buildx build --platform=linux/amd64 -t ${APPVER} .
+# May need to rebuild as per  below if you plan to use it on EC2, not on your Mac.
+# docker buildx build --platform=linux/amd64 -t ${APPVER} .
 docker tag ${APPVER} philip11/${APPVER}
+# the login below is just one time
+docker login --username=philip11
 docker push philip11/${APPVER}
-
 ```
 
-
-# the login below not needed often
-docker login --username=philip11
-docker push philip11/cachedemo:latest
 
 
 TODO: try via via maven, see
