@@ -32,14 +32,14 @@ java -jar target/appkube-1.jar --server.port=8888
 ## Containerize
 
 ```
-docker buildx build -t java-app-kube:v1 .
-docker run -p 5000:8080 java-app-kube:v1
+APPVER="java-app-kube:v1"
+docker buildx build -t ${APPVER} .
+docker run -p 5000:8090 ${APPVER}
 ```
 Then in browser http://localhost:5000
 
 Once happy
 ```
-APPVER="java-app-kube:v1"
 # May need to rebuild as per  below if you plan to use it on EC2, not on your Mac.
 # docker buildx build --platform=linux/amd64 -t ${APPVER} .
 docker tag ${APPVER} philip11/${APPVER}
@@ -48,7 +48,14 @@ docker login --username=philip11
 docker push philip11/${APPVER}
 ```
 
-
-
 TODO: try via via maven, see
 https://docs.spring.io/spring-boot/docs/3.1.5/maven-plugin/reference/htmlsingle/#build-image
+
+## Kubernetes
+On Mac, install multipass, start up some VMs, install and configure microk8s on them, etc, etc
+
+Separate Google doc has notes how to do it and hit the app started up below:
+```
+kubectl apply -f kube/deploy.yml
+kubectl apply -f kube/service.yml
+```
