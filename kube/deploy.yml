@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: web
   replicas: 5
-  minReadySeconds: 5
+  minReadySeconds: 20
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -25,5 +25,6 @@ spec:
         - name: web-cnt
           image: philip11/java-app-kube:v1
           imagePullPolicy: Always
-          ports:
-            - containerPort: 8080
+# just documentation. only useful / needs to be correct for container->container connection on same pod
+#          ports:
+#            - containerPort: 8090
