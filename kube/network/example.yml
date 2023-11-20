@@ -1,28 +1,29 @@
+# A funny policy to let web app pods talk to each other
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: db-network-policy
+  name: web-network-policy
   namespace: default
 spec:
   podSelector:
     matchLabels:
-      app: db
+      app: web
   policyTypes:
     - Ingress
-    - Egress
+#    - Egress
   ingress:
     - from:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: default
-        - podSelector:
+          podSelector:
             matchLabels:
-              app: backend
+              app: web
       ports:
         - protocol: TCP
-          port: 5432
-  egress:
-    - to:
-        - podSelector:
-            matchLabels:
-              app: backend
+          port: 8090
+#  egress:
+#    - to:
+#        - podSelector:
+#            matchLabels:
+#              app: web
