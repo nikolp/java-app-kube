@@ -32,9 +32,10 @@ java -jar target/appkube-1.jar --server.port=8888
 ## Containerize
 
 ```
-APPVER="java-app-kube:v1"
-docker buildx build -t ${APPVER} .
-docker run -p 5000:8090 ${APPVER}
+VER=v1
+APP=java-app-kube
+docker buildx build -t ${APP}:${VER} .
+docker run -p 5000:8090 ${APP}:${VER}
 ```
 Then in browser http://localhost:5000
 
@@ -42,10 +43,10 @@ Once happy
 ```
 # May need to rebuild as per  below if you plan to use it on EC2, not on your Mac.
 # docker buildx build --platform=linux/amd64 -t ${APPVER} .
-docker tag ${APPVER} philip11/${APPVER}
+docker tag ${APP}:${VER} philip11/${APP}:${VER}
 # the login below is just one time
 docker login --username=philip11
-docker push philip11/${APPVER}
+docker push philip11/${APP}:${VER}
 ```
 
 TODO: try via via maven, see
