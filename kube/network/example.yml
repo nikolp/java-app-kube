@@ -10,20 +10,25 @@ spec:
       app: web
   policyTypes:
     - Ingress
-#    - Egress
+    - Egress
   ingress:
     - from:
-        - namespaceSelector:
-            matchLabels:
-              kubernetes.io/metadata.name: default
-          podSelector:
+# This is already implied:
+# Targets the same namespace as the pod for which we are writing the policy.
+#        - namespaceSelector:
+#            matchLabels:
+#              kubernetes.io/metadata.name: default
+          - podSelector:
+              matchLabels:
+                app: web
+      ports:
+        - protocol: TCP
+          port: 8090
+  egress:
+    - to:
+        - podSelector:
             matchLabels:
               app: web
       ports:
         - protocol: TCP
           port: 8090
-#  egress:
-#    - to:
-#        - podSelector:
-#            matchLabels:
-#              app: web
