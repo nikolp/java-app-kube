@@ -1,6 +1,9 @@
-# This container will keep exiting because "ls" command finishes
-# And the system will keep restarting it
-# Because pods are really for long running servers.
+# Print something to stdout and something else to a log file
+# kubectl logs mypod2 -f
+# kubectl exec -it mypod2 -- tail -f /var/log/log.txt
+# To watch when it gets killed
+# kubectl exec -it mypod2 -- watch ls -l /var/log/log.txt
+
 apiVersion: v1
 kind: Pod
 metadata:
@@ -9,11 +12,23 @@ spec:
   containers:
     - name: c1
       image: alpine
+      volumeMounts:
+        - name: varlog
+          mountPath: /var/log
       command: ["/bin/sh", "-c"]
       args:
       - >
         while true;
         do
           date
+          echo "Writing to log!" >> /var/log/log.txt
           sleep 1
         done
+      resources:
+        requests:
+          ephemeral-storage: "1Ki"
+        limits:
+          ephemeral-storage: "1Ki"
+  volumes:
+    - name: varlog
+      emptyDir: {}
