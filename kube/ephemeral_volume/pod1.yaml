@@ -1,0 +1,15 @@
+# This container will keep exiting because "ls" command finishes
+# And the system will keep restarting it
+# Because pods are really for long running servers.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod1
+spec:
+  containers:
+    - name: c1
+      image: alpine
+      command: ["ls"]
+      args:
+        - "-l"
+        - "bin"
