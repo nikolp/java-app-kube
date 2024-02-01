@@ -1,0 +1,58 @@
+# See the service on how to hit this pod, something like
+# curl 192.168.64.11:30007
+# where above ip is the ip of any of the nodes:
+# kubectl get no -o wide
+# Or equivalent in browser: http://192.168.64.11:30007
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: map-v1
+data:
+  index.html: |
+    <html>
+    <body>
+      V1 Hello
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: myapp
+      ver: v1
+  template:
+    metadata:
+      labels:
+        app: myapp
+        ver: v1
+    spec:
+      containers:
+        - name: c1
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: thedata
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: thedata
+          configMap:
+            name: map-v1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-svc
+spec:
+  selector:
+    app: myapp
+    ver: v1
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30007
+  type: NodePort
