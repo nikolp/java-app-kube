@@ -32,7 +32,7 @@ java -jar target/appkube-1.jar --server.port=8888
 ## Containerize
 
 ```
-VER=v1
+VER=v3
 APP=java-app-kube
 docker buildx build -t ${APP}:${VER} .
 docker run -p 5000:8090 ${APP}:${VER}
@@ -41,8 +41,8 @@ Then in browser http://localhost:5000
 
 Once happy
 ```
-# May need to rebuild as per  below if you plan to use it on EC2, not on your Mac.
-# docker buildx build --platform=linux/amd64 -t ${APPVER} .
+# May need to rebuild as per below if you plan to use it on EC2, not on your Mac.
+# docker buildx build --platform=linux/amd64 -t ${APP}:${VER} .
 docker tag ${APP}:${VER} philip11/${APP}:${VER}
 # the login below is just one time
 docker login --username=philip11
@@ -60,3 +60,8 @@ Separate Google doc has notes how to do it and hit the app started up below:
 kubectl apply -f kube/deploy.yml
 kubectl apply -f kube/service.yml
 ```
+
+## History
+v1 and v2 still work but were built with openjdk:17-jdk which is no longer supported
+
+v3 was built for amd64 architecture (so will not run on Mac)
