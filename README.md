@@ -65,3 +65,7 @@ kubectl apply -f kube/service.yml
 v1 and v2 still work but were built with openjdk:17-jdk which is no longer supported
 
 v3 was built for amd64 architecture (so will not run on Mac)
+
+Note that "docker buildx build" in theory can take comma separate list of platforms in
+--platform but does not work on my Mac installation.
+
