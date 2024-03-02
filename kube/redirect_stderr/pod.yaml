@@ -1,0 +1,49 @@
+# https://kodekloud.com/topic/lightning-lab-2-2/
+# Problem 5: container logs to stdout/stderr
+# How to send that to a directory on the control node
+# Solution: hack the original container to use sh -c and redirect to a file
+# Another container in same pod can grep that file and dump it to another file
+# That final file is in a volume mapped to directory on control node
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-pod-dind-878516
+  namespace: default
+spec:
+  containers:
+    - name: engine-x
+      image: nginx
+    - name: agent-x
+      image: ubuntu
+      command:
+        - sleep
+        - "3600"
+    - name: log-x
+      image: kodekloud/event-simulator
+      command:  ["sh", "-c", "python event-simulator.py 2> /templogs/log.txt"]
+      volumeMounts:
+        - name: tempvol
+          mountPath: /templogs
+    - name: grepping
+      image: ubuntu
+      command: ["sh", "-c", "tail -f /templogs/log.txt | grep WARNING > /outputlogs/dind-878516_logs.txt"]
+      volumeMounts:
+        - name: tempvol
+          mountPath: /templogs
+        - name: outputvol
+          mountPath: /outputlogs
+  volumes:
+    - name: tempvol
+      emptyDir: {}
+    - name: outputvol
+      hostPath:
+        path: /opt
+        type: Directory
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: Exists
+
